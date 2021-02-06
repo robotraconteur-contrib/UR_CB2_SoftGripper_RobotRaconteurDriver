@@ -4,6 +4,8 @@ using Mono.Options;
 using RobotRaconteur;
 using RobotRaconteur.Companion.InfoParser;
 using Mono.Unix;
+using com.robotraconteur.robotics.tool;
+using RobotRaconteur.Companion.Util;
 
 namespace UR_CB2_SoftGripper_RobotRaconteurDriver
 {
@@ -50,8 +52,8 @@ namespace UR_CB2_SoftGripper_RobotRaconteurDriver
 
             if (tool_info_file == null)
             {
-                //Console.WriteLine("error: robot-info-file must be specified");
-                //return 1;
+                Console.WriteLine("error: robot-info-file must be specified");
+                return 1;
             }
 
             if (robot_url == null)
@@ -61,10 +63,13 @@ namespace UR_CB2_SoftGripper_RobotRaconteurDriver
             }
 
 
+            Tuple<ToolInfo, LocalIdentifierLocks> tool_info = null;
+            tool_info = ToolInfoParser.LoadToolInfoYamlWithIdentifierLocks(tool_info_file);
 
+            using (tool_info.Item2)
             using (var node_setup = new ServerNodeSetup("robot_signal_tool", 58323, args))
             {
-                using (var tool = new UR_CB2_SoftGripper(robot_url))
+                using (var tool = new UR_CB2_SoftGripper(robot_url,tool_info.Item1))
                 {
                     RobotRaconteurNode.s.RegisterService("tool", "com.robotraconteur.robotics.tool", tool);
 

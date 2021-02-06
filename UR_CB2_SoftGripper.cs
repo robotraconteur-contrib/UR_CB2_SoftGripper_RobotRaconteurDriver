@@ -12,10 +12,17 @@ namespace UR_CB2_SoftGripper_RobotRaconteurDriver
     {
         
         protected ServiceSubscription _robot_sub;
+        ToolInfo _tool_info;
 
-        public UR_CB2_SoftGripper(string robot_url)
+        public UR_CB2_SoftGripper(string robot_url, ToolInfo tool_info)
         {
             _robot_sub = RobotRaconteurNode.s.SubscribeService(robot_url);
+            _tool_info = tool_info;
+            this.tool_info = tool_info;
+            if (tool_info != null)
+            {
+                this.device_info = tool_info.device_info;
+            }
         }
 
         public override void close()
