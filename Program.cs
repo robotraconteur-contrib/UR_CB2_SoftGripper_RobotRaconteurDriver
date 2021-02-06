@@ -71,7 +71,8 @@ namespace UR_CB2_SoftGripper_RobotRaconteurDriver
             {
                 using (var tool = new UR_CB2_SoftGripper(robot_url,tool_info.Item1))
                 {
-                    RobotRaconteurNode.s.RegisterService("tool", "com.robotraconteur.robotics.tool", tool);
+                    var tool_service_ctx = RobotRaconteurNode.s.RegisterService("tool", "com.robotraconteur.robotics.tool", tool);
+                    tool_service_ctx.SetServiceAttributes(AttributesUtil.GetDefaultServiceAtributesFromDeviceInfo(tool_info.Item1.device_info));
 
                     if (!wait_signal)
                     {
